@@ -3,14 +3,17 @@ package com.baloch.products.models;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.sql.Time;
 import java.sql.Timestamp;
 
 @Entity
 @Data
+@Getter
+@Setter
 @AllArgsConstructor
 @Table(name = "products")
 public class Product {
@@ -23,7 +26,7 @@ public class Product {
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "categoryId")
     private Category category;
 
     private int productCount;
@@ -37,4 +40,8 @@ public class Product {
 
     @UpdateTimestamp
     private Timestamp updatedat;
+
+    public Product() {
+
+    }
 }

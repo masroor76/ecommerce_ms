@@ -1,15 +1,26 @@
 package com.baloch.products.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.baloch.products.dto.ProductRequest;
+import com.baloch.products.models.Product;
+import com.baloch.products.services.ProductServices;
+import lombok.AllArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("api/v1/product")
 public class ProductController {
+    private ProductServices productServices;
 
     @GetMapping
-    public String Product(){
-        return "Products";
+    public List<Product> Product(){
+        return productServices.getAllProducts();
+    }
+
+    @PostMapping
+    public Product createProduct(@RequestBody ProductRequest productRequest ){
+        return productServices.createProduct(productRequest);
     }
 }

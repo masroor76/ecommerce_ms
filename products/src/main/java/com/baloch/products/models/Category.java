@@ -27,4 +27,8 @@ public class Category {
 
     @CreationTimestamp
     private Timestamp createdAt;
+
+    public Category() {
+
+    }
 }

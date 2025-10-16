@@ -1,0 +1,25 @@
+{
+  "name": "orders",
+  "version": "1.0.0",
+  "description": "Order MicroService for Spring Boot MicroServices",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon --exec 'npm start'"
+  },
+  "keywords": [
+    "node",
+    "spring",
+    "boot",
+    "microservices"
+  ],
+  "author": "Masroor",
+  "license": "ISC",
+  "dependencies": {
+    "eureka-js-client": "^4.5.0",
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}

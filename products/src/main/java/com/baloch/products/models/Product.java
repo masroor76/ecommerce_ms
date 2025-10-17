@@ -12,8 +12,6 @@ import java.sql.Timestamp;
 
 @Entity
 @Data
-@Getter
-@Setter
 @AllArgsConstructor
 @Table(name = "products")
 public class Product {

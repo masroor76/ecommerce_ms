@@ -16,7 +16,7 @@ public class CategoryController {
     private CategoryServices categoryServices;
 
     @GetMapping("/{categoryId}")
-    public Optional<Category> getCategory(@PathVariable String categoryId){
+    public Object getCategory(@PathVariable String categoryId){
         return categoryServices.getCategory(categoryId);
     }
 

@@ -8,7 +8,7 @@ const port = 8083
 
 const instanceConfig = {
     app: 'order-node-service',
-    hostName: 'localhost',
+    hostName: 'order-service',
     ipAddr: '127.0.0.1',
     port: {
         '$': port,
@@ -25,7 +25,7 @@ const instanceConfig = {
 
 const eurekaServerConfig = {
     host: 'localhost',
-    port: 8090,
+    port: 8000,
     servicePath: '/eureka/apps/',
 };
 

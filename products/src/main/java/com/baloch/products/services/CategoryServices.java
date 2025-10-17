@@ -1,21 +1,32 @@
 package com.baloch.products.services;
 
 import com.baloch.products.dto.CategoryRequest;
+import com.baloch.products.dto.CategoryResponse;
+import com.baloch.products.dto.ProductResponse;
 import com.baloch.products.models.Category;
 import com.baloch.products.repository.CategoryRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
 public class CategoryServices {
     private CategoryRepository categoryRepository;
 
-    public Optional<Category> getCategory(String categoryId){
-        return categoryRepository.findById(categoryId);
+    public Object getCategory(String categoryId){
+        Category category = categoryRepository.findById(categoryId).orElse(null);
+        if(category == null) {
+
+            return "Product with id "+categoryId+" is not found";
+        }
+        CategoryResponse categoryResponse =new CategoryResponse();
+        categoryResponse.setCategoryName(category.getCategoryName());
+        categoryResponse.setCategoryDesc(category.getCategoryDesc());
+        categoryResponse.setProducts(category.getProducts());
+        categoryResponse.setKeywords(category.getKeywords());
+        return categoryResponse;
     }
 
 

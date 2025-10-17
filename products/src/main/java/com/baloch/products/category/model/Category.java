@@ -1,11 +1,13 @@
-package com.baloch.products.models;
+package com.baloch.products.category.model;
 
+import com.baloch.products.product.model.Product;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -16,14 +18,15 @@ import java.util.Set;
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String category_id;
+    private String categoryId;
 
     private String categoryName;
     private String categoryDesc;
     private List<String> keywords;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Product> products;
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<Product> products = new HashSet<>();
+//    private Set<Product> products;
 
     @CreationTimestamp
     private Timestamp createdAt;

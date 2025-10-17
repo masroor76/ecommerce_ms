@@ -1,13 +1,9 @@
-package com.baloch.products.controller;
+package com.baloch.products.category.controller;
 
-import com.baloch.products.dto.CategoryRequest;
-import com.baloch.products.models.Category;
-import com.baloch.products.services.CategoryServices;
+import com.baloch.products.category.service.CategoryServices;
+import com.baloch.products.category.dto.CategoryRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @AllArgsConstructor
@@ -21,12 +17,12 @@ public class CategoryController {
     }
 
     @PostMapping
-    public Category saveCategory(@RequestBody CategoryRequest categoryRequest){
+    public Object saveCategory(@RequestBody CategoryRequest categoryRequest){
         return categoryServices.createCategory(categoryRequest);
     }
 
     @GetMapping
-    public List<Category> getAllCategory(){
+    public Object getAllCategory(){
         return categoryServices.getAllCategory();
     }
 }

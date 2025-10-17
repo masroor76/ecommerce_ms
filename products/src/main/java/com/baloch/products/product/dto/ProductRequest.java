@@ -1,6 +1,5 @@
-package com.baloch.products.dto;
+package com.baloch.products.product.dto;
 
-import com.baloch.products.models.Category;
 import lombok.*;
 
 @Getter

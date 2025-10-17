@@ -1,13 +1,9 @@
-package com.baloch.products.controller;
+package com.baloch.products.product.controller;
 
-import com.baloch.products.dto.ProductRequest;
-import com.baloch.products.dto.ProductResponse;
-import com.baloch.products.models.Product;
-import com.baloch.products.services.ProductServices;
+import com.baloch.products.product.dto.ProductRequest;
+import com.baloch.products.product.service.ProductServices;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -21,12 +17,12 @@ public class ProductController {
     }
 
     @GetMapping
-    public List<Product> Product(){
+    public Object Product(){
         return productServices.getAllProducts();
     }
 
     @PostMapping
-    public Product createProduct(@RequestBody ProductRequest productRequest ){
+    public Object createProduct(@RequestBody ProductRequest productRequest ){
         return productServices.createProduct(productRequest);
     }
 }

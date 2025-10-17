@@ -1,6 +1,6 @@
-package com.baloch.products.repository;
+package com.baloch.products.product.repository;
 
-import com.baloch.products.models.Product;
+import com.baloch.products.product.model.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

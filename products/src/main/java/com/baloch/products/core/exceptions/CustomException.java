@@ -1,4 +1,4 @@
-package com.baloch.products.exceptions;
+package com.baloch.products.core.exceptions;
 
 public class CustomException extends RuntimeException{
     private String errorMessage;

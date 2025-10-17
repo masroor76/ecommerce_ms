@@ -1,4 +1,4 @@
-package com.baloch.products.dto;
+package com.baloch.products.category.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -14,6 +14,6 @@ public class ProductResponse {
 
     private float price;
 
-    private Category category;
+    private String category;
 
 }

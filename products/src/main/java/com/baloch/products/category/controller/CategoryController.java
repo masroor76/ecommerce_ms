@@ -25,4 +25,14 @@ public class CategoryController {
     public Object getAllCategory(){
         return categoryServices.getAllCategory();
     }
+
+    @PatchMapping("/{categoryId}")
+    public Object updateProduct(@PathVariable String categoryId, @RequestBody CategoryRequest categoryRequest){
+        return categoryServices.updateCategory(categoryId,categoryRequest);
+    }
+
+    @DeleteMapping("/{categoryId}")
+    public Object deleteProduct(@PathVariable String categoryId){
+        return categoryServices.deleteCategory(categoryId);
+    }
 }

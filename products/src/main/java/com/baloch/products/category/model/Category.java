@@ -1,12 +1,14 @@
 package com.baloch.products.category.model;
 
 import com.baloch.products.product.model.Product;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -24,9 +26,9 @@ public class Category {
     private String categoryDesc;
     private List<String> keywords;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<Product> products = new HashSet<>();
-//    private Set<Product> products;
+    @JsonManagedReference
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Product> products=new ArrayList<>();
 
     @CreationTimestamp
     private Timestamp createdAt;

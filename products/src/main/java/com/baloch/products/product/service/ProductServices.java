@@ -3,6 +3,7 @@ package com.baloch.products.product.service;
 import com.baloch.products.core.dto.GenericResponseBody;
 import com.baloch.products.category.model.Category;
 import com.baloch.products.category.repository.CategoryRepository;
+import com.baloch.products.core.handlers.HandlerMethod;
 import com.baloch.products.product.repository.ProductRepository;
 import com.baloch.products.product.dto.ProductRequest;
 import com.baloch.products.product.dto.ProductResponse;
@@ -18,89 +19,120 @@ import java.util.List;
 public class ProductServices {
     private ProductRepository productRepository;
     private CategoryRepository categoryRepository;
+    private HandlerMethod handler;
 
 
-
+    // SINGLE PRODUCT SERVICE
     public Object getSingleProducts(String productId) {
         Product product = productRepository.findById(productId).orElse(null);
-
         if(product == null) {
-            GenericResponseBody genericResponseBody= new GenericResponseBody();
-            genericResponseBody.setHttpStatus(404);
-            genericResponseBody.setMessage("Product with id "+productId+" was not found!");
+            GenericResponseBody genericResponseBody= handler.genericResponseBodyMethod(404,
+                    "Product with id "+productId+" was not found!");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(genericResponseBody);
         }
-
-        ProductResponse productResponse = new ProductResponse();
-        productResponse.setName(product.getName());
-        productResponse.setDescription(product.getDescription());
-        productResponse.setPrice(product.getPrice());
-        productResponse.setProductCount(product.getProductCount());
-
-        GenericResponseBody genericResponseBody= new GenericResponseBody();
-        genericResponseBody.setHttpStatus(200);
-        genericResponseBody.setMessage("Product with id "+productId+" was found successfully");
-        genericResponseBody.setBody(productResponse);
-
+        ProductResponse productResponse = productResponseMethod(product);
+        GenericResponseBody genericResponseBody=  handler.genericResponseBodyMethod(200,
+                "Product with id "+productId+" was found successfully",
+                productResponse);
         return ResponseEntity.status(HttpStatus.OK).body(genericResponseBody);
     }
 
 
-
+    // ALL PRODUCTS SERVICE
     public Object getAllProducts(){
         try {
             List<Product> plist = productRepository.findAll();
-
-            GenericResponseBody genericResponseBody = new GenericResponseBody();
-            genericResponseBody.setHttpStatus(200);
-            genericResponseBody.setMessage("All Products found successfully");
-            genericResponseBody.setBody(plist);
-
+            GenericResponseBody genericResponseBody = handler.genericResponseBodyMethod(200,"All Products found successfully",plist);
             return ResponseEntity.status(HttpStatus.OK).body(genericResponseBody);
         }catch (Exception e){
-        GenericResponseBody genericResponseBody= new GenericResponseBody();
-        genericResponseBody.setHttpStatus(500);
-        genericResponseBody.setMessage(e.toString());
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(genericResponseBody);
-
-    }
-    }
-
-
-
-
-    public Object createProduct(ProductRequest productRequest) {
-        Product newProduct = new Product();
-        newProduct.setName(productRequest.getName());
-        newProduct.setDescription(productRequest.getDescription());
-        newProduct.setPrice(productRequest.getPrice());
-        newProduct.setProductCount(productRequest.getProductCount());
-        newProduct.setSQNumber(productRequest.getSQNumber());
-        Category category = categoryRepository.findById(productRequest.getCategory()).orElse(null);
-        newProduct.setCategory(category);
-
-        try {
-            Product saveProduct = productRepository.save(newProduct);
-
-            ProductResponse productResponse = new ProductResponse();
-            productResponse.setName(saveProduct.getName());
-            productResponse.setDescription(saveProduct.getDescription());
-            productResponse.setPrice(saveProduct.getPrice());
-            productResponse.setPrice(saveProduct.getPrice());
-            productResponse.setCategory(saveProduct.getCategory());
-
-
-            GenericResponseBody genericResponseBody = new GenericResponseBody();
-            genericResponseBody.setHttpStatus(201);
-            genericResponseBody.setMessage("Product created successfully");
-            genericResponseBody.setBody(productResponse);
-
-            return ResponseEntity.status(HttpStatus.CREATED).body(genericResponseBody);
-        }catch (Exception e){
-            GenericResponseBody genericResponseBody = new GenericResponseBody();
-            genericResponseBody.setHttpStatus(500);
-            genericResponseBody.setMessage(e.toString());
+            GenericResponseBody genericResponseBody = handler.genericResponseBodyMethod(500,e.toString());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(genericResponseBody);
         }
+    }
+
+
+
+    // CREATE SERVICE
+    public Object createProduct(ProductRequest productRequest) {
+        Product newProduct = newProductMethod(productRequest);
+        Category category = categoryRepository.findById(productRequest.getCategory()).orElse(null);
+        newProduct.setCategory(category);
+        try {
+            Product saveProduct = productRepository.save(newProduct);
+            ProductResponse productResponse = productResponseMethod(saveProduct);
+            GenericResponseBody genericResponseBody = handler.genericResponseBodyMethod(201,
+                    "Product created successfully",productResponse);
+            return ResponseEntity.status(HttpStatus.CREATED).body(genericResponseBody);
+        }catch (Exception e){
+            GenericResponseBody genericResponseBody = handler.genericResponseBodyMethod(500,e.toString());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(genericResponseBody);
+        }
+    }
+
+
+    // UPDATE SERVICE
+    public Object updateProduct(String productId , ProductRequest productRequest) {
+        Product product = productRepository.findById(productId).orElse(null);
+        if(product==null){
+            GenericResponseBody genericResponseBody= handler.genericResponseBodyMethod(404,"Failed to update Product with id "+productId);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(genericResponseBody);
+        }
+
+        if(productRequest.getName() != null){
+            product.setName(productRequest.getName());
+        }
+        if(productRequest.getDescription() != null){
+            product.setDescription(productRequest.getDescription());
+        }
+        if(productRequest.getCategory() != null){
+            categoryRepository.findById(productRequest.getCategory()).ifPresent(product::setCategory);
+        }
+        if(productRequest.getProductCount() != product.getProductCount()){
+            product.setProductCount(productRequest.getProductCount());
+        }
+        if(productRequest.getSQNumber() != null){
+            product.setSQNumber(productRequest.getSQNumber());
+        }
+        if(productRequest.getPrice() != product.getPrice()){
+            product.setPrice(productRequest.getPrice());
+        }
+
+        try {
+            Product newProduct = productRepository.save(product);
+            ProductResponse productResponse = productResponseMethod(newProduct);
+            GenericResponseBody genericResponseBody = handler.genericResponseBodyMethod(201,"Product with new Data has been updated successfully",
+                    productResponse);
+            return ResponseEntity.status(HttpStatus.CREATED).body(genericResponseBody);
+        }catch (Exception e){
+            GenericResponseBody genericResponseBody = handler.genericResponseBodyMethod(500,e.toString());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(genericResponseBody);
+        }
+    }
+
+    // DELETE SERVICE
+    public Object deleteProducts(String productId) {
+        productRepository.deleteById(productId);
+        GenericResponseBody genericResponseBody = handler.genericResponseBodyMethod(202,
+                "Product with id "+productId+" has been deleted successfully");
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(genericResponseBody);
+    }
+
+    Product newProductMethod(ProductRequest productRequest){
+        Product product = new Product();
+        product.setName(productRequest.getName());
+        product.setDescription(productRequest.getDescription());
+        product.setPrice(productRequest.getPrice());
+        product.setProductCount(productRequest.getProductCount());
+        product.setSQNumber(productRequest.getSQNumber());
+        return product;
+    }
+
+    ProductResponse productResponseMethod(Product product){
+        ProductResponse productResponse = new ProductResponse();
+        productResponse.setName(product.getName());
+        productResponse.setDescription(product.getDescription());
+        productResponse.setPrice(product.getPrice());
+        productResponse.setCategory(product.getCategory().getCategoryName());
+        return  productResponse;
     }
 }

@@ -25,4 +25,15 @@ public class ProductController {
     public Object createProduct(@RequestBody ProductRequest productRequest ){
         return productServices.createProduct(productRequest);
     }
+
+    @PatchMapping("/{productId}")
+    public Object updateProduct(@PathVariable String productId,@RequestBody ProductRequest productRequest){
+        return productServices.updateProduct(productId,productRequest);
+    }
+
+    @DeleteMapping("/{productId}")
+    public Object deleteProduct(@PathVariable String productId){
+        return productServices.deleteProducts(productId);
+    }
+
 }

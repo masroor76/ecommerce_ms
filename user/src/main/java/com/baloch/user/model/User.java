@@ -1,6 +1,5 @@
 package com.baloch.user.model;
 
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,9 +18,17 @@ public class User {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String user_id;
 
+    private String email;
+
+    private String username;
+
     private String name;
+
+    private String password;
+
     private int age;
 
+    @Enumerated(EnumType.STRING)
     private Role role;
 
     @CreationTimestamp
@@ -29,4 +36,8 @@ public class User {
 
     @UpdateTimestamp
     private Timestamp updatedAt;
+
+    public User() {
+
+    }
 }

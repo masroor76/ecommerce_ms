@@ -1,6 +1,9 @@
+server:
+  port: 8081
+
 spring:
   application:
-    name: Products
+    name: PRODUCTS
   datasource:
     url: jdbc:postgresql://172.17.0.2:5432/product_ms
     username: postgres
@@ -13,6 +16,5 @@ spring:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:8000/eureka # Replace with your Eureka server URL
-server:
-  port: 8081
+      defaultZone: http://localhost:4646/eureka/
+

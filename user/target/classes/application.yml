@@ -1,3 +1,8 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:4646/eureka
+
 server:
   port: 8082
 
@@ -13,7 +18,22 @@ spring:
       ddl-auto: update
     show-sql: true
 
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://localhost:4646/eureka
+#  kafka:
+#    # Common configuration for connecting to the Kafka cluster
+#    bootstrap-servers: localhost:9092
+#
+#    # Specific configuration for the consumer client
+#    consumer:
+#      # A unique ID for the consumer group. All instances of this service will share this ID.
+#      group-id: notification-service-group
+#      # Deserializer to convert the incoming message key bytes back into an object
+#      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+#      # Deserializer to convert the incoming message value bytes back into an object
+#      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+#      # Behavior when a consumer starts without a saved offset (e.g., the first run)
+#      auto-offset-reset: earliest
+#
+## Custom properties to define the Kafka topic name
+#kafka:
+#  topic:
+#    product-selected: product.events.selection-created.v1

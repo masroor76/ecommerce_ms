@@ -1,16 +1,12 @@
-spring:
-  application:
-    name: auth
-  session:
-    store-type: redis
-  redis:
-    host: localhost
-    port: 8001
-
-server:
-  port: 8987
-
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:4646/eureka/
+      defaultZone: http://localhost:4646/eureka
+
+
+server:
+  port: 8084
+
+spring:
+  application:
+    name: auth

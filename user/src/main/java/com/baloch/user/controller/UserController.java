@@ -4,15 +4,27 @@ package com.baloch.user.controller;
 import com.baloch.user.dto.UserRequest;
 import com.baloch.user.dto.UserRequestPasswordUpdate;
 import com.baloch.user.dto.UserRequestUpdate;
+import com.baloch.user.model.User;
 import com.baloch.user.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("api/v1/user")
 @AllArgsConstructor
 public class UserController {
     private UserService userService;
+
+    @GetMapping("/username/{username}")
+    public Optional<User> userByUsername(@PathVariable String username){
+        try {
+            return userService.getUserByUsername(username);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @GetMapping("/{userId}")
     public Object user(@PathVariable String userId){

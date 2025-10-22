@@ -9,12 +9,28 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 
 @AllArgsConstructor
 @Service
-public class UserService {
+public class UserService{
     private UserRepository userRepository;
     private HandlerMethod handler;
+
+    public Optional<User> getUserByUsername(String username) throws Exception {
+        try {
+            Optional<User> user = userRepository.findByUsername(username);
+            if (user.isPresent()) {
+                System.out.println(user);
+                return user;
+            } else {
+                throw new Exception("User not found");
+            }
+        }catch (Exception e){
+            throw new Exception(e.toString());
+        }
+    }
 
     // SINGLE USER SERVICE
     public Object user(String userId){
@@ -40,6 +56,8 @@ public class UserService {
     // CREATE-USER SERVICE
     public Object createUser(UserRequest userRequest){
         User user = userRequestMethod(userRequest);
+
+//        user.setPassword(securityConfig.bCryptPasswordEncoder().encode(user.getPassword()));
         try {
             User savedUser = userRepository.save(user);
             UserResponse userResponse = userResponseMethod(savedUser);

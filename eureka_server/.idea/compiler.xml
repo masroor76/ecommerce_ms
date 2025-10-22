@@ -8,6 +8,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="eureka_server" />
+        <module name="auth" />
         <module name="api_gateway" />
       </profile>
       <profile name="Annotation profile for User" enabled="true">
@@ -22,7 +23,6 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="auth" target="25" />
       <module name="gateway" target="25" />
     </bytecodeTargetLevel>
   </component>

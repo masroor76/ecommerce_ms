@@ -10,6 +10,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -39,9 +41,14 @@ public class CategoryServices {
 
     public Object getAllCategory(){
         List<Category> categories = categoryRepository.findAll();
+        List<CategoryResponse> categoriesRes = new ArrayList<>();
         try {
+            for(Category category : categories){
+                CategoryResponse categoryResponse = categoryResponseMethod(category);
+                categoriesRes.add(categoryResponse);
+            }
             GenericResponseBody genericResponseBody = handler.genericResponseBodyMethod(200,
-                    "All Categories found successfully", categories);
+                    "All Categories found successfully", categoriesRes);
             return ResponseEntity.status(HttpStatus.OK).body(genericResponseBody);
         }catch (Exception e){
             GenericResponseBody genericResponseBody = handler.genericResponseBodyMethod(500,

@@ -1,3 +1,8 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:4646/eureka/
+
 server:
   port: 8081
 
@@ -13,8 +18,8 @@ spring:
       ddl-auto: update
     show-sql: true
 
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://localhost:4646/eureka/
-
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer

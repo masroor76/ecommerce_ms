@@ -11,7 +11,10 @@ import com.baloch.products.product.model.Product;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -20,6 +23,7 @@ public class ProductServices {
     private ProductRepository productRepository;
     private CategoryRepository categoryRepository;
     private HandlerMethod handler;
+    private KafkaTemplate<String, Product> kafkaTemplate;
 
 
     // SINGLE PRODUCT SERVICE
@@ -30,6 +34,7 @@ public class ProductServices {
                     "Product with id "+productId+" was not found!");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(genericResponseBody);
         }
+        kafkaTemplate.send("product",product);
         ProductResponse productResponse = productResponseMethod(product);
         GenericResponseBody genericResponseBody=  handler.genericResponseBodyMethod(200,
                 "Product with id "+productId+" was found successfully",
@@ -42,7 +47,12 @@ public class ProductServices {
     public Object getAllProducts(){
         try {
             List<Product> plist = productRepository.findAll();
-            GenericResponseBody genericResponseBody = handler.genericResponseBodyMethod(200,"All Products found successfully",plist);
+            List<ProductResponse> productResponses = new ArrayList<>();
+            for(Product product : plist){
+                ProductResponse productResponse = productResponseMethod(product);
+                productResponses.add(productResponse);
+            }
+            GenericResponseBody genericResponseBody = handler.genericResponseBodyMethod(200,"All Products found successfully",productResponses);
             return ResponseEntity.status(HttpStatus.OK).body(genericResponseBody);
         }catch (Exception e){
             GenericResponseBody genericResponseBody = handler.genericResponseBodyMethod(500,e.toString());
@@ -129,6 +139,7 @@ public class ProductServices {
 
     ProductResponse productResponseMethod(Product product){
         ProductResponse productResponse = new ProductResponse();
+        productResponse.setId(product.getId());
         productResponse.setName(product.getName());
         productResponse.setDescription(product.getDescription());
         productResponse.setPrice(product.getPrice());

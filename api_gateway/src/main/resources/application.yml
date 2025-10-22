@@ -5,6 +5,12 @@ spring:
   application:
     name: api-gateway
 
+  session:
+    store-type: redis
+  redis:
+    host: localhost
+    port: 9123
+
   cloud:
     gateway:
       server:

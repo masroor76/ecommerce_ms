@@ -11,12 +11,8 @@ import lombok.Data;
 public class UserRequestUpdate {
     private String email;
 
-    private String username;
-
     private String name;
 
     private int age;
 
-    @Enumerated(EnumType.STRING)
-    private Role role;
 }

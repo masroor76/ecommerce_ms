@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.util.AntPathMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -26,7 +27,11 @@ public class SecurityConfig {
         http
                 .csrf(customizer->customizer.disable())
                 .authorizeHttpRequests(authorize->authorize
-//                        .requestMatchers("/api/v1/**").permitAll()
+                        .requestMatchers("/api/v1/auth/update-username",
+                                "/api/v1/auth/update-password").hasAuthority("CLIENT")
+                        .requestMatchers("/api/v1/auth/update-username",
+                                "/api/v1/auth/update-password").hasAuthority("ADMIN")
+                        .requestMatchers("/api/v1/auth/register").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults());

@@ -13,24 +13,24 @@ import java.util.Collections;
 @AllArgsConstructor
 public class UserPrincipal implements UserDetails {
     private SecurityConfig config;
-    private User user;
+    private UserCredentials UserCredentials;
 
-    public UserPrincipal(User user) {
-        this.user = user;
+    public UserPrincipal(UserCredentials user) {
+        this.UserCredentials = user;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority(user.getRole().toString()));
+        return Collections.singleton(new SimpleGrantedAuthority(UserCredentials.getRole().toString()));
     }
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return UserCredentials.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return user.getUsername();
+        return UserCredentials.getUsername();
     }
 }

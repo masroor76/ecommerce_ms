@@ -2,7 +2,6 @@ package com.baloch.user.controller;
 
 
 import com.baloch.user.dto.UserRequest;
-import com.baloch.user.dto.UserRequestPasswordUpdate;
 import com.baloch.user.dto.UserRequestUpdate;
 import com.baloch.user.model.User;
 import com.baloch.user.service.UserService;
@@ -16,15 +15,6 @@ import java.util.Optional;
 @AllArgsConstructor
 public class UserController {
     private UserService userService;
-
-    @GetMapping("/username/{username}")
-    public Optional<User> userByUsername(@PathVariable String username){
-        try {
-            return userService.getUserByUsername(username);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     @GetMapping("/{userId}")
     public Object user(@PathVariable String userId){
@@ -40,14 +30,20 @@ public class UserController {
     public Object updateUser(@PathVariable String userId, @RequestBody UserRequestUpdate userRequestUpdate){
         return userService.updateUser(userId,  userRequestUpdate);
     }
-
-    @PatchMapping("/password-update/{userId}")
-    public Object updateUserPassword(@PathVariable String userId, @RequestBody UserRequestPasswordUpdate passwordUpdate){
-        return userService.updateUserPassword(userId, passwordUpdate);
-    }
-
-    @DeleteMapping("/{userId}")
-    public Object deleteUser(@PathVariable String userId, @RequestBody String password){
-        return userService.deleteUser(userId, password);
-    }
 }
+
+
+
+
+
+
+
+//@PatchMapping("/password-update/{userId}")
+//public Object updateUserPassword(@PathVariable String userId, @RequestBody UserRequestPasswordUpdate passwordUpdate){
+//    return userService.updateUserPassword(userId, passwordUpdate);
+//}
+//
+//@DeleteMapping("/{userId}")
+//public Object deleteUser(@PathVariable String userId, @RequestBody String password){
+//    return userService.deleteUser(userId, password);
+//}

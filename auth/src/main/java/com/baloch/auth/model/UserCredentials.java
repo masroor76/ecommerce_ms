@@ -1,4 +1,4 @@
-package com.baloch.user.model;
+package com.baloch.auth.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,24 +8,25 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
 
+import static com.baloch.auth.model.Role.CLIENT;
+
+
 @Entity
 @Data
 @AllArgsConstructor
-@Table(name = "users")
-public class User {
+public class UserCredentials {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String user_id;
 
     @Column(unique = true,nullable = false)
     private String username;
 
-    private String name;
+    @Column(nullable = false)
+    private String password;
 
-    @Column(unique = true,nullable = false)
-    private String email;
-
-    private int age;
+    private Role role;
 
     @CreationTimestamp
     private Timestamp createdAt;
@@ -33,7 +34,7 @@ public class User {
     @UpdateTimestamp
     private Timestamp updatedAt;
 
-    public User() {
-
+    public UserCredentials() {
+        this.role = CLIENT;
     }
 }

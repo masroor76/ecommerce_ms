@@ -9,16 +9,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class UserRequest {
-    private String email;
-
+    private String id;
     private String username;
-
-    private String name;
-
-    private String password;
-
-    private int age;
-
-    @Enumerated(EnumType.STRING)
-    private Role role;
 }

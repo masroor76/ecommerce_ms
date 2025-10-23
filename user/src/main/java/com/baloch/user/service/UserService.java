@@ -18,20 +18,6 @@ public class UserService{
     private UserRepository userRepository;
     private HandlerMethod handler;
 
-    public Optional<User> getUserByUsername(String username) throws Exception {
-        try {
-            Optional<User> user = userRepository.findByUsername(username);
-            if (user.isPresent()) {
-                System.out.println(user);
-                return user;
-            } else {
-                throw new Exception("User not found");
-            }
-        }catch (Exception e){
-            throw new Exception(e.toString());
-        }
-    }
-
     // SINGLE USER SERVICE
     public Object user(String userId){
         try {
@@ -57,7 +43,6 @@ public class UserService{
     public Object createUser(UserRequest userRequest){
         User user = userRequestMethod(userRequest);
 
-//        user.setPassword(securityConfig.bCryptPasswordEncoder().encode(user.getPassword()));
         try {
             User savedUser = userRepository.save(user);
             UserResponse userResponse = userResponseMethod(savedUser);
@@ -72,28 +57,15 @@ public class UserService{
     }
 
     // UPDATE SERVICE
-    public Object updateUser(String userId , UserRequestUpdate userRequest) {
+    public Object updateUser(String userId , UserRequestUpdate userRequestUpdate) {
         User user = userRepository.findById(userId).orElse(null);
         if(user==null){
             GenericResponseBody genericResponseBody= handler.genericResponseBodyMethod(404,"Failed to update User with id "+userId);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(genericResponseBody);
         }
-
-        if(userRequest.getEmail() != null){
-            user.setEmail(userRequest.getEmail());
-        }
-        if(userRequest.getUsername() != null){
-            user.setUsername(userRequest.getUsername());
-        }
-        if(userRequest.getName() != null){
-            user.setName(userRequest.getName());
-        }
-        if(userRequest.getAge() != user.getAge()){
-            user.setAge(userRequest.getAge());
-        }
-        if(userRequest.getRole() != null){
-            user.setRole(userRequest.getRole());
-        }
+            user.setEmail(userRequestUpdate.getEmail());
+            user.setName(userRequestUpdate.getName());
+            user.setAge(userRequestUpdate.getAge());
 
         try {
             User updatedUser = userRepository.save(user);
@@ -105,80 +77,89 @@ public class UserService{
             GenericResponseBody genericResponseBody = handler.genericResponseBodyMethod(500,e.toString());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(genericResponseBody);
         }
-    }
-
-    // UPDATE PASSWORD SERVICE
-    public Object updateUserPassword(String userId , UserRequestPasswordUpdate userRequest) {
-        User user = userRepository.findById(userId).orElse(null);
-        if(user==null){
-            GenericResponseBody genericResponseBody= handler.genericResponseBodyMethod(404,"Failed to update User with id "+userId);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(genericResponseBody);
-        }
-
-        user.setPassword(userRequest.getPassword());
-
-        try {
-            User updatedUser = userRepository.save(user);
-            UserResponse userResponse = userResponseMethod(updatedUser);
-            GenericResponseBody genericResponseBody = handler.genericResponseBodyMethod(202,"User with new Data has been updated successfully",
-                    userResponse);
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(genericResponseBody);
-        }catch (Exception e){
-            GenericResponseBody genericResponseBody = handler.genericResponseBodyMethod(500,e.toString());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(genericResponseBody);
-        }
-    }
-
-
-    //DELETE SERVICE
-    public Object deleteUser(String userId, String password){
-        if(password == null){
-            GenericResponseBody genericResponseBody = handler.genericResponseBodyMethod(500,
-                    "Enter password to delete the user account!");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(genericResponseBody);
-        }
-        User user = userRepository.findById(userId).orElse(null);
-        if(user!=null) {
-            if(user.getPassword()!=password){
-                GenericResponseBody genericResponseBody = handler.genericResponseBodyMethod(500,
-                        "Password for the user with id "+userId+" is incorrect!");
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(genericResponseBody);
-            }
-            try {
-                userRepository.deleteById(userId);
-                GenericResponseBody genericResponseBody = handler.genericResponseBodyMethod(202,
-                        "User has been deleted successfully");
-                return ResponseEntity.status(HttpStatus.ACCEPTED).body(genericResponseBody);
-            } catch (Exception e) {
-                GenericResponseBody genericResponseBody = handler.genericResponseBodyMethod(500,
-                        e.toString());
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(genericResponseBody);
-            }
-        }
-        GenericResponseBody genericResponseBody = handler.genericResponseBodyMethod(404,
-                "User with "+userId+" not found");
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(genericResponseBody);
     }
 
     User userRequestMethod(UserRequest userRequest){
         User user = new User();
-        user.setEmail(userRequest.getEmail());
+        user.setUser_id(user.getUser_id());
         user.setUsername(userRequest.getUsername());
-        user.setName(userRequest.getName());
-        user.setPassword(userRequest.getPassword());
-        user.setAge(userRequest.getAge());
-        user.setRole(userRequest.getRole());
         return user;
     }
 
     UserResponse userResponseMethod(User user){
         UserResponse userResponse = new UserResponse();
         userResponse.setId(user.getUser_id());
-        userResponse.setEmail(user.getEmail());
         userResponse.setUsername(user.getUsername());
         userResponse.setName(user.getName());
+        userResponse.setEmail(user.getEmail());
         userResponse.setAge(user.getAge());
-        userResponse.setRole(user.getRole());
         return userResponse;
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//Would setup these Urls in Auth Service
+// UPDATE PASSWORD SERVICE
+//    public Object updateUserPassword(String userId , UserRequestPasswordUpdate userRequest) {
+//        User user = userRepository.findById(userId).orElse(null);
+//        if(user==null){
+//            GenericResponseBody genericResponseBody= handler.genericResponseBodyMethod(404,"Failed to update User with id "+userId);
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(genericResponseBody);
+//        }
+//
+//        user.setPassword(userRequest.getPassword());
+//
+//        try {
+//            User updatedUser = userRepository.save(user);
+//            UserResponse userResponse = userResponseMethod(updatedUser);
+//            GenericResponseBody genericResponseBody = handler.genericResponseBodyMethod(202,"User with new Data has been updated successfully",
+//                    userResponse);
+//            return ResponseEntity.status(HttpStatus.ACCEPTED).body(genericResponseBody);
+//        }catch (Exception e){
+//            GenericResponseBody genericResponseBody = handler.genericResponseBodyMethod(500,e.toString());
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(genericResponseBody);
+//        }
+//    }
+///
+//
+//    //DELETE SERVICE
+//    public Object deleteUser(String userId, String password){
+//        if(password == null){
+//            GenericResponseBody genericResponseBody = handler.genericResponseBodyMethod(500,
+//                    "Enter password to delete the user account!");
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(genericResponseBody);
+//        }
+//        User user = userRepository.findById(userId).orElse(null);
+//        if(user!=null) {
+//            if(user.getPassword()!=password){
+//                GenericResponseBody genericResponseBody = handler.genericResponseBodyMethod(500,
+//                        "Password for the user with id "+userId+" is incorrect!");
+//                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(genericResponseBody);
+//            }
+//            try {
+//                userRepository.deleteById(userId);
+//                GenericResponseBody genericResponseBody = handler.genericResponseBodyMethod(202,
+//                        "User has been deleted successfully");
+//                return ResponseEntity.status(HttpStatus.ACCEPTED).body(genericResponseBody);
+//            } catch (Exception e) {
+//                GenericResponseBody genericResponseBody = handler.genericResponseBodyMethod(500,
+//                        e.toString());
+//                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(genericResponseBody);
+//            }
+//        }
+//        GenericResponseBody genericResponseBody = handler.genericResponseBodyMethod(404,
+//                "User with "+userId+" not found");
+//        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(genericResponseBody);
+//    }

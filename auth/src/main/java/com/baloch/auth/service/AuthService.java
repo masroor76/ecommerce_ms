@@ -5,8 +5,6 @@ import com.baloch.auth.dto.*;
 import com.baloch.auth.handlers.HandlerMethod;
 import com.baloch.auth.model.UserCredentials;
 import com.baloch.auth.repository.AuthRepository;
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -52,21 +50,21 @@ public class AuthService {
     public Object updateUsername(UsernameDTO username, Authentication principal) throws Exception {
         UserDetails userDetails = (UserDetails) principal.getPrincipal();
 
-        UserCredentials user = authRepository.findByUsername(userDetails.getUsername());
-        if(user==null){
+        UserCredentials userCredentials = authRepository.findByUsername(userDetails.getUsername());
+        if(userCredentials ==null){
             GenericResponseBody genericResponseBody = handlerMethod.genericResponseBodyMethod(404,
                     "User Not Found Error!");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(genericResponseBody);
         }
-        UserCredentials userWithMatchingUsername = authRepository.findByUsername(username.getUsername());
-        if(userWithMatchingUsername!=null){
+        UserCredentials userCredentialsWithMatchingUsername = authRepository.findByUsername(username.getUsername());
+        if(userCredentialsWithMatchingUsername !=null){
             GenericResponseBody genericResponseBody = handlerMethod.genericResponseBodyMethod(400,
                     "Username is already taken!");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(genericResponseBody);
         }
         try {
-            user.setUsername(username.getUsername());
-            ResponseDTO responseDTO = getUserCredentialsResponseMethod(authRepository.save(user));
+            userCredentials.setUsername(username.getUsername());
+            ResponseDTO responseDTO = getUserCredentialsResponseMethod(authRepository.save(userCredentials));
             GenericResponseBody genericResponseBody = handlerMethod.genericResponseBodyMethod(
                     201,"Username has been updated Successfully",
                     responseDTO);
@@ -83,15 +81,15 @@ public class AuthService {
     public Object updatePassword(PasswordDTO password, Authentication principal) throws Exception {
         UserDetails userDetails = (UserDetails) principal.getPrincipal();
 
-        UserCredentials user = authRepository.findByUsername(userDetails.getUsername());
-        if(user==null){
+        UserCredentials userCredentials = authRepository.findByUsername(userDetails.getUsername());
+        if(userCredentials ==null){
             GenericResponseBody genericResponseBody = handlerMethod.genericResponseBodyMethod(404,
                     "User Not Found Error!");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(genericResponseBody);
         }
         try {
-            user.setPassword(customSecurityConfig.passwordEncoder().encode(password.getPassword()));
-            ResponseDTO responseDTO = getUserCredentialsResponseMethod(authRepository.save(user));
+            userCredentials.setPassword(customSecurityConfig.passwordEncoder().encode(password.getPassword()));
+            ResponseDTO responseDTO = getUserCredentialsResponseMethod(authRepository.save(userCredentials));
             GenericResponseBody genericResponseBody = handlerMethod.genericResponseBodyMethod(
                     201,"Password has been updated Successfully",
                     responseDTO);

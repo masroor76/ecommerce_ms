@@ -1,17 +1,20 @@
 package com.baloch.auth.dto;
 
+import com.baloch.auth.model.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 
 @Data
 @AllArgsConstructor
-public class ResponseDTO {
+@Component
+public class ResponseUserDTO {
     private String user_id;
     private String username;
-    private String  role;
+    private String password;
+    private Role role;
 
-    public ResponseDTO() {
+    public ResponseUserDTO() {
 
     }
 }

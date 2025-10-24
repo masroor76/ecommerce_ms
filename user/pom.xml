@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.baloch</groupId>
-	<artifactId>user</artifactId>
+	<artifactId>userCredentials</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>User</name>
 	<description>Microservices ecommerce project for Spring Boot.</description>

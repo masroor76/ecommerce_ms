@@ -4,24 +4,17 @@ import com.baloch.auth.dto.PasswordDTO;
 import com.baloch.auth.dto.RequestDTO;
 import com.baloch.auth.dto.UsernameDTO;
 import com.baloch.auth.service.AuthService;
+import jakarta.servlet.ServletResponse;
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/auth")
+@AllArgsConstructor
 public class AuthController {
     private final AuthService authService;
 
-    public AuthController(AuthService authService) {
-        this.authService = authService;
-    }
-
-    @GetMapping("/userdetails")
-    public void userDetails(Authentication principal){
-        UserDetails userDetails = (UserDetails) principal.getPrincipal();
-        System.out.println(userDetails.getUsername());
-    }
 
     @PostMapping("/register")
     public Object register(@RequestBody RequestDTO userRequestBody){

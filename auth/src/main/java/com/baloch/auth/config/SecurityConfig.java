@@ -1,9 +1,8 @@
 package com.baloch.auth.config;
 
-import com.baloch.auth.filter.MyRequestResponseFilter;
+import com.baloch.auth.filter.JWTFilter;
 import com.baloch.auth.service.CustomUserDetailsService;
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import com.baloch.auth.service.JWTService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,22 +10,23 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.util.AntPathMatcher;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
     @Autowired
+    private JWTService jwtService;
+    @Autowired
     private CustomUserDetailsService customUserDetailsService;
-
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -37,9 +37,11 @@ public class SecurityConfig {
                                 "/api/v1/auth/update-password").hasAuthority("CLIENT")
                         .requestMatchers("/api/v1/auth/update-username",
                                 "/api/v1/auth/update-password").hasAuthority("ADMIN")
-                        .requestMatchers("/api/v1/auth/register","/error").permitAll()
+                        .requestMatchers("/api/v1/auth/register","/api/v1/auth/login").permitAll()
                         .anyRequest().authenticated())
-                .addFilterBefore(new MyRequestResponseFilter(customUserDetailsService), UsernamePasswordAuthenticationFilter.class);
+                .sessionManagement(session->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(new JWTFilter(jwtService,customUserDetailsService), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
@@ -50,6 +52,11 @@ public class SecurityConfig {
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }
+
+//    @Bean
+//    public AuthenticationManager authManager(AuthenticationConfiguration config) throws Exception {
+//        return config.getAuthenticationManager();
+//    }
 
 
     @Bean

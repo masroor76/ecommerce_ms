@@ -3,10 +3,14 @@ package com.baloch.auth.controller;
 import com.baloch.auth.dto.PasswordDTO;
 import com.baloch.auth.dto.RequestDTO;
 import com.baloch.auth.dto.UsernameDTO;
+import com.baloch.auth.model.UserCredentials;
+import com.baloch.auth.model.UserDetailsPrincipal;
 import com.baloch.auth.service.AuthService;
+import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,6 +19,10 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
     private final AuthService authService;
 
+    @PostMapping("/login")
+    public Object login(@RequestBody UserCredentials user){
+        return authService.login(user);
+    }
 
     @PostMapping("/register")
     public Object register(@RequestBody RequestDTO userRequestBody){

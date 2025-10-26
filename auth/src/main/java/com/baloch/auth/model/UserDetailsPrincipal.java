@@ -29,8 +29,6 @@ public class UserDetailsPrincipal implements UserDetails {
 
     @Override
     public String getUsername() {
-
-        System.out.println(user.getRole());
         return user.getUsername();
     }
 }

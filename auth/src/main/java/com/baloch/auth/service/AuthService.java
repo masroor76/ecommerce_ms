@@ -5,24 +5,36 @@ import com.baloch.auth.dto.*;
 import com.baloch.auth.handlers.HandlerMethod;
 import com.baloch.auth.model.UserCredentials;
 import com.baloch.auth.repository.AuthRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
 public class AuthService {
+    private CustomUserDetailsService customUserDetailsService;
     private final AuthRepository authRepository;
     private final SecurityConfig customSecurityConfig;
     private HandlerMethod handlerMethod;
+    private JWTService jwtService;
 
-    public AuthService(AuthRepository authRepository,
-                       SecurityConfig customSecurityConfig,
-                       HandlerMethod handlerMethod) {
-        this.authRepository = authRepository;
-        this.customSecurityConfig = customSecurityConfig;
-        this.handlerMethod = handlerMethod;
+
+    public Object login(UserCredentials user) {
+        String username = user.getUsername();
+        String password = user.getPassword();
+
+        Authentication authentication = customSecurityConfig
+                .authenticationProvider(customUserDetailsService)
+                .authenticate(new UsernamePasswordAuthenticationToken(username,password));
+        if (authentication.isAuthenticated()){
+            return jwtService.generateToken(user.getUsername());
+        }
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication Filed");
     }
 
     public Object register(RequestDTO userRequestBody) {

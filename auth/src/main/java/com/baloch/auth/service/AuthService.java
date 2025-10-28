@@ -5,13 +5,20 @@ import com.baloch.auth.dto.*;
 import com.baloch.auth.handlers.HandlerMethod;
 import com.baloch.auth.model.UserCredentials;
 import com.baloch.auth.repository.AuthRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @AllArgsConstructor
@@ -22,8 +29,11 @@ public class AuthService {
     private HandlerMethod handlerMethod;
     private JWTService jwtService;
 
+    public Boolean validate(Authentication auth){
+        return auth.isAuthenticated();
+    }
 
-    public Object login(UserCredentials user) {
+    public Object login(UserCredentials user, HttpServletResponse response) {
         String username = user.getUsername();
         String password = user.getPassword();
 
@@ -34,7 +44,7 @@ public class AuthService {
             return jwtService.generateToken(user.getUsername());
         }
 
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication Filed");
+        return ResponseEntity.status(HttpStatus.CREATED).body("Authentication Failed");
     }
 
     public Object register(RequestDTO userRequestBody) {

@@ -46,8 +46,31 @@ public class JWTService {
         return Keys.hmacShaKeyFor(secretKeyBytes);
     }
 
+    // VALIDATING TOKEN
+    public boolean validateToken(String token, UserDetails userDetails) {
+        try {
+            final String username = extractUsername(token);
+            return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        }catch (Exception e){
+            System.out.println("Error in validating token!!");
+            return false;
+        }
+    }
+
+    private boolean isTokenExpired(String token) {
+        return extractExpiration(token).before(new Date());
+    }
+
+    private Date extractExpiration(String token) {
+        return extractClaim(token, Claims::getExpiration);
+    }
     public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
+        try {
+            return extractClaim(token, Claims::getSubject);
+        }catch (Exception e){
+            System.out.println(e);
+            return null;
+        }
     }
 
     private <T> T extractClaim(String token, Function<Claims,T> claimsResolver) {
@@ -63,18 +86,4 @@ public class JWTService {
                 .getPayload();
     }
 
-
-
-    public boolean validateToken(String token, UserDetails userDetails) {
-        final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
-    }
-
-    private boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
-    }
-
-    private Date extractExpiration(String token) {
-        return extractClaim(token, Claims::getExpiration);
-    }
 }

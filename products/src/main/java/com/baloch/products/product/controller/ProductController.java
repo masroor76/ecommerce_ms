@@ -3,6 +3,8 @@ package com.baloch.products.product.controller;
 import com.baloch.products.product.dto.ProductRequest;
 import com.baloch.products.product.service.ProductServices;
 import lombok.AllArgsConstructor;
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -12,7 +14,9 @@ public class ProductController {
     private ProductServices productServices;
 
     @GetMapping("/{productId}")
-    public Object getSingleProduct(@PathVariable String productId){
+    public Object getSingleProduct(@PathVariable String productId,
+                                   @RequestHeader("X-User-Username") String username){
+        System.out.println(username);
         return productServices.getSingleProducts(productId);
     }
 
